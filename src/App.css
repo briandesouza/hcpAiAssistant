@@ -235,6 +235,7 @@ body {
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  cursor: grab;
 }
 
 .action-cards-carousel::-webkit-scrollbar {

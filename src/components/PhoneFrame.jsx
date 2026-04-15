@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import useDragScroll from '../hooks/useDragScroll'
 
 export default function PhoneFrame({ children }) {
+  const contentRef = useDragScroll('vertical')
   const [currentTime, setCurrentTime] = useState(formatTime())
 
   function formatTime() {
@@ -48,7 +50,7 @@ export default function PhoneFrame({ children }) {
             </svg>
           </div>
         </div>
-        <div className="phone-content">
+        <div className="phone-content" ref={contentRef}>
           {children}
         </div>
         <div className="home-indicator" />

@@ -78,7 +78,7 @@ Horizontally scrollable cards appear above the conversation list. Each card repr
 4. **Payment Plan Suggestions** — Customer expressed financial difficulty ("I can't pay this all at once"). AI drafts a response acknowledging their concern and presenting available options (financing, installment plans).
 
 #### In-Conversation AI Drafts
-When a Pro opens a conversation that has an AI recommendation, the draft appears at the bottom of the chat thread, ready to edit or send. Only shown when AI confidence exceeds the threshold.
+When a Pro clicks "AI Reply" on an action card, the draft appears at the bottom of the chat thread, ready to edit or send. Only shown when AI confidence exceeds the threshold.
 
 #### AI Reasoning ("How AI came up with this")
 Every action card and in-conversation draft has a "See reasoning" button that opens a panel showing:
@@ -182,7 +182,7 @@ The MVP (this prototype) is **Phase 1 only** — full Pro control, zero autonomy
 - Web-based prototype with iPhone mockup frame
 - HCP-style messaging UI with pre-populated mock conversations
 - AI action cards (payment promise follow-ups, invoice questions, invoice summaries, payment plan suggestions)
-- Live AI draft generation via OpenAI API
+- On-demand AI draft generation via OpenAI API
 - AI reasoning panel showing source messages and logic
 - Edit and send functionality for drafts
 - 6 mock customer conversations demonstrating different scenarios
@@ -209,5 +209,5 @@ The MVP (this prototype) is **Phase 1 only** — full Pro control, zero autonomy
 2. At the top: 4 AI action cards (payment follow-up, invoice question, invoice summary, payment plan)
 3. Pro taps an action card → sees AI-drafted message → taps "See reasoning" → sees source messages
 4. Pro edits the draft or sends as-is
-5. Pro taps into a conversation → sees chat thread → AI suggested reply at bottom
+5. Pro taps into a conversation → sees chat thread → can request AI draft via action card
 6. One conversation (Rachel) has no AI suggestion → demonstrates selectivity

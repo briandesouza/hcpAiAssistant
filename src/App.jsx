@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import PhoneFrame from './components/PhoneFrame'
+import useDragScroll from './hooks/useDragScroll'
 
 // Helper: format ISO timestamp to readable time (e.g. "3:45 PM")
 function formatTime(isoString) {
@@ -32,6 +33,7 @@ function avatarColor(name) {
 
 // Placeholder components — will be replaced by other agents
 function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSendDraft, onSendMessage, onShowReasoning, onEditDraft }) {
+  const messageListRef = useDragScroll('vertical')
   return (
     <div className="conversation-view">
       <div className="conversation-header">
@@ -46,9 +48,9 @@ function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSen
         </div>
         <div className="conversation-header-spacer" />
       </div>
-      <div className="message-list">
+      <div className="message-list" ref={messageListRef}>
         {conversation.messages && conversation.messages.map((msg, i) => (
-          <div key={i}>
+          <React.Fragment key={i}>
             {msg.type === 'invoice' ? (
               <div className="invoice-card">
                 <div className="invoice-card-header">
@@ -77,7 +79,7 @@ function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSen
                 <span className="message-time">{formatTime(msg.timestamp)}</span>
               </div>
             )}
-          </div>
+          </React.Fragment>
         ))}
         {isLoadingDraft && (
           <div className="ai-typing-indicator">
@@ -145,6 +147,7 @@ function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSen
 }
 
 function InboxView({ conversations, actions, onSelectConversation, onActionReply, onActionView, onShowReasoning }) {
+  const carouselRef = useDragScroll('horizontal')
   return (
     <div className="inbox-view">
       <div className="inbox-header">
@@ -163,7 +166,7 @@ function InboxView({ conversations, actions, onSelectConversation, onActionReply
             <h2 className="actions-section-title">Suggested Actions</h2>
             <span className="actions-count">{actions.length}</span>
           </div>
-          <div className="action-cards-carousel">
+          <div className="action-cards-carousel" ref={carouselRef}>
             {actions.map((action) => (
               <div key={action.id} className="action-card" data-priority={action.priority || 'medium'}>
                 <div className="action-card-accent" style={{ backgroundColor: action.accentColor }} />
@@ -322,13 +325,6 @@ export default function App() {
       setIsLoadingDraft(false)
     }
   }, [actions])
-
-  // Auto-fetch AI draft when a conversation with an AI action is selected
-  useEffect(() => {
-    if (selectedConversation && selectedConversation.hasAIAction) {
-      fetchAiDraft(selectedConversation.id)
-    }
-  }, [selectedConversation?.id, fetchAiDraft])
 
   const handleSelectConversation = useCallback(async (id) => {
     try {
