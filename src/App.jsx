@@ -601,29 +601,29 @@ export default function App() {
         setCustomerMemories(prev => ({ ...prev, [convId]: baseline }))
       }
 
-      // Action changes ONLY for customer messages (pro messages never create/modify actions)
-      if (isFromCustomer) {
-        if (result.shouldCreateAction) {
-          const priorityColors = { high: '#FF3B30', medium: '#007AFF', low: '#34C759' }
-          const newAction = {
-            id: `action_${Date.now()}`,
-            conversationId: convId,
-            type: result.actionType,
-            title: result.actionTitle || `Action for ${convWithNewMsg.customer?.name}`,
-            subtitle: result.actionSubtitle || '',
-            customerName: convWithNewMsg.customer?.name || 'Customer',
-            priority: result.actionPriority || 'medium',
-            accentColor: priorityColors[result.actionPriority] || '#007AFF',
-            hasDraft: result.hasSufficientContext && result.actionType !== 'invoice_request'
-          }
-          setActions(prev => {
-            const filtered = prev.filter(a => a.conversationId !== convId)
-            const weight = { high: 0, medium: 1, low: 2 }
-            return [...filtered, newAction].sort((a, b) => (weight[a.priority] ?? 1) - (weight[b.priority] ?? 1))
-          })
-        } else {
-          setActions(prev => prev.filter(a => a.conversationId !== convId))
+      // Create or replace actions for customer messages that warrant them.
+      // Pro messages can also create actions via conversation evaluation
+      // (e.g., invoice_summary when pro sends an invoice).
+      // Existing actions are NOT removed when a message returns shouldCreateAction=false;
+      // they persist until the pro sends a draft reply or manually dismisses the card.
+      if (result.shouldCreateAction) {
+        const priorityColors = { high: '#FF3B30', medium: '#007AFF', low: '#34C759' }
+        const newAction = {
+          id: `action_${Date.now()}`,
+          conversationId: convId,
+          type: result.actionType,
+          title: result.actionTitle || `Action for ${convWithNewMsg.customer?.name}`,
+          subtitle: result.actionSubtitle || '',
+          customerName: convWithNewMsg.customer?.name || 'Customer',
+          priority: result.actionPriority || 'medium',
+          accentColor: priorityColors[result.actionPriority] || '#007AFF',
+          hasDraft: result.actionType !== 'invoice_request'
         }
+        setActions(prev => {
+          const filtered = prev.filter(a => a.conversationId !== convId)
+          const weight = { high: 0, medium: 1, low: 2 }
+          return [...filtered, newAction].sort((a, b) => (weight[a.priority] ?? 1) - (weight[b.priority] ?? 1))
+        })
       }
     } catch (err) {
       console.error('Pipeline error:', err)

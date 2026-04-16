@@ -139,7 +139,7 @@ function formatConversationHistory(conversation) {
 }
 
 function formatInvoiceDetails(invoice) {
-  if (!invoice) return "No invoice associated with this conversation.";
+  if (!invoice) return "No structured invoice object — check conversation history for any invoice details mentioned by the pro.";
   const lineItemsText = invoice.lineItems
     .map((li) => `  - ${li.description}: $${li.amount}`)
     .join("\n");
@@ -593,19 +593,29 @@ ${evalInstruction}`;
 
     console.log("[Pipeline] Claude returned:", JSON.stringify({ shouldCreateAction: result.shouldCreateAction, actionType: result.actionType, hasInvoice: !!conversation.invoice, sender }, null, 2));
 
-    // Guard: pro messages NEVER create actions (hard override even if Claude suggests one)
+    // Guard: pro messages don't create actions from their own evaluation
     if (isProMessage) {
+      const memoryUpdate = result.customerMemoryUpdate;
+
+      // But if the pro message mentions an invoice, evaluate the full
+      // conversation state to detect proactive actions (e.g., invoice_summary)
+      const lowerText = message.text.toLowerCase();
+      const mentionsInvoice = lowerText.includes("invoice") || lowerText.includes("sending the bill") || lowerText.includes("sending the invoice");
+
+      if (mentionsInvoice) {
+        console.log("[Pipeline] Pro message mentions invoice — running conversation evaluation");
+        try {
+          const convResult = await evaluateConversation(conversation, proMemory);
+          // Merge: keep memory from pro evaluation, action from conversation evaluation
+          convResult.customerMemoryUpdate = memoryUpdate || convResult.customerMemoryUpdate;
+          return convResult;
+        } catch (err) {
+          console.error("[Pipeline] Conversation evaluation failed, returning pro result:", err.message);
+        }
+      }
+
       result.shouldCreateAction = false;
       result.actionType = "none";
-    }
-
-    // Guard: if no invoice and action is not invoice_request, force no action
-    if (
-      !conversation.invoice &&
-      result.actionType !== "invoice_request"
-    ) {
-      console.log("[Pipeline] Guard blocked: no invoice and actionType is", result.actionType, "(not invoice_request)");
-      result.shouldCreateAction = false;
     }
 
     // Guard: if actionType is none, force no action
@@ -646,10 +656,9 @@ export async function generateDraft(
     return null;
   }
 
-  // Guard: no invoice means no draft
-  if (!conversation.invoice) {
-    return null;
-  }
+  // No hard guard on missing invoice — new conversations may not have a
+  // structured invoice object but still have invoice details in the chat
+  // history. Claude can draft using conversation context alone.
 
   const systemPrompt = DRAFT_SYSTEM_PROMPTS[actionType];
   if (!systemPrompt) {
@@ -796,14 +805,6 @@ Should an action be created for Sandro? Use the evaluation_result tool to return
     if (!result) {
       console.error("No evaluation_result tool_use found in response");
       return fallbackConversationEvaluate(conversation);
-    }
-
-    // Guard: if no invoice and action is not invoice_request, force no action
-    if (
-      !conversation.invoice &&
-      result.actionType !== "invoice_request"
-    ) {
-      result.shouldCreateAction = false;
     }
 
     // Guard: if actionType is none, force no action
