@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-04-16T09:28:46.014Z",
+  "actions": [
+    {
+      "id": "action_1",
+      "conversationId": "conv_1",
+      "type": "invoice_question",
+      "title": "Mike questioning floor leveling charge",
+      "subtitle": "Mike is asking about the $450 floor leveling compound charge on Invoice #1001, saying he didn't ask for it.",
+      "customerName": "Mike Johnson",
+      "priority": "high",
+      "accentColor": "#FF3B30",
+      "hasDraft": true
+    },
+    {
+      "id": "action_2",
+      "conversationId": "conv_2",
+      "type": "invoice_summary",
+      "title": "Send Invoice Breakdown to Patricia",
+      "subtitle": "Invoice #1002 was just sent — proactively explain the $2,800 in charges before any questions arise.",
+      "customerName": "Patricia Almeida",
+      "priority": "low",
+      "accentColor": "#34C759",
+      "hasDraft": true
+    }
+  ],
+  "cachedDrafts": {
+    "conv_1": {
+      "draft": "Hey Mike! The $450 covers the self-leveling compound we used to fill those low spots in your subfloor before laying the planks. I mentioned it when I came out to measure, the subfloor had dips that would've caused gaps, clicking, and boards rocking underfoot if we didn't fix them first. It's standard practice for any quality install, and at $450 for 480 sq ft it's actually on the lower end of what leveling typically runs. Happy to walk you through it in more detail if you want.",
+      "reasoning": "Mike is questioning the $450 floor leveling (float) charge on invoice #1001. The conversation history shows Sandro mentioned the low spots and floor prep during the estimate visit (msg_1_4), and Mike approved the $3,200 quote that included it. The FAQ has a detailed explanation of what a float charge is and why it's necessary. The response explains what the charge covers, why it was necessary, references that it was mentioned during the estimate, and notes it's standard industry practice. It also contextualizes the price relative to the standard range ($2-$4/sq ft, so $450 for 480 sq ft is about $0.94/sq ft, actually below the standard range).",
+      "sourceMessageIds": [
+        "msg_1_10"
+      ],
+      "confidence": 0.95,
+      "memorySources": [
+        {
+          "text": "A float charge covers the cost of leveling your subfloor before we install. If your subfloor has dips, humps, or uneven spots, we have to pour a self-leveling compound to flatten everything out. Without it, your new flooring won't sit right, you'll get gaps, clicking, or boards that rock when you step on them. The cost depends on how much leveling is needed. I know it can feel like an unexpected line item, but it's one of those things that protects the quality of the whole job.",
+          "source": "FAQ: What is a float charge and why is it on my estimate?"
+        },
+        {
+          "text": "Floor Leveling (Self-Leveling Compound): $2 – $4 / sq ft",
+          "source": "Services & Pricing"
+        },
+        {
+          "text": "Thanks for showing me the space today Mike. Living room + kitchen comes out to about 480 sq ft. The subfloor has a few low spots that'll need leveling before we can lay the planks. I've put together a quote for $3,200 covering material, floor prep, and labor.",
+          "source": "Conversation history msg_1_4"
+        }
+      ]
+    },
+    "conv_2": {
+      "draft": "Hey Patricia! Just wanted to give you a quick rundown of the invoice. The $2,800 covers everything we did on your master bedroom and hallway floors. That includes the full sanding and prep work to strip away all the old wear ($600), the Provincial stain application to bring out that beautiful oak grain ($450), and then three coats of polyurethane finish ($550) which is what gives you that durability and shine that'll last for years. The rest is labor ($1,200) for the three days we spent on-site. People sometimes wonder why staining and poly are separate, but they're really two different processes. The stain is all about color and bringing out the wood's character, while the polyurethane is your protective layer that keeps everything looking great long-term. Payment is due by the end of the month, and you can use Venmo, Zelle, check, or card, whatever's easiest. Thanks again for trusting us with your floors, so glad you love how they turned out!",
+      "reasoning": "Patricia received invoice #1002 and acknowledged it with \"Got it, I'll take a look!\" — this is the natural moment to send a friendly invoice summary explaining each line item. The invoice has four line items: sanding & prep, stain application, polyurethane finish, and labor. I proactively explain why staining and polyurethane are listed separately since that could cause confusion. I reference her satisfaction, the Provincial stain choice, and payment options from the business FAQ. The tone is warm and conversational, matching Sandro's texting style.",
+      "sourceMessageIds": [
+        "msg_2_10"
+      ],
+      "confidence": 0.95,
+      "memorySources": [
+        {
+          "text": "Do you refinish hardwood floors? Absolutely. If your hardwood is looking worn, scratched up, or faded, refinishing brings it back to life without the cost of a full replacement. We sand everything down, repair any problem areas, and apply fresh coats of finish.",
+          "source": "FAQ - Do you refinish hardwood floors?"
+        },
+        {
+          "text": "Payment: Due upon completion — Venmo, Zelle, check, or card",
+          "source": "Standard Policies - Payment"
+        },
+        {
+          "text": "Stain choice: Provincial. Approved quote: $2,800 for full sand-down, stain, and 3 coats of polyurethane. Status: Job completed — customer very satisfied with results.",
+          "source": "Customer Memory - Patricia Almeida"
+        },
+        {
+          "text": "Hardwood Refinishing: $3 – $5 / sq ft",
+          "source": "Services & Pricing"
+        }
+      ]
+    }
+  },
+  "customerMemories": {
+    "conv_1": "## Mike Johnson\n\n- **Location**: Fort Myers, FL area (Lee/Collier/Charlotte County service area)\n- **Job**: Luxury Vinyl Plank (LVP) installation — living room and kitchen (~480 sq ft total)\n- **Subfloor**: Had low spots requiring leveling compound\n- **Crew**: Sandro and Fabiana completed the job over ~2 days\n- **Invoice**: #1001 — $3,200 (LVP material $1,400 + floor leveling $450 + labor $1,350) — sent, awaiting payment\n- **Satisfaction**: Initially very happy with the results (\"They look amazing, thank you!\"), but later questioned the $450 floor leveling charge, feeling it wasn't something he explicitly asked for\n- **Status**: Job completed, invoice sent, payment pending — customer disputing floor leveling line item",
+    "conv_2": "- **Rooms**: Master bedroom and hallway\n- **Flooring type**: Existing hardwood floors (solid oak, worn, needs refinishing)\n- **Interest**: Hardwood refinishing services\n- **Stain choice**: Provincial\n- **Approved quote**: $2,800 for full sand-down, stain, and 3 coats of polyurethane\n- **Status**: Job completed — customer very satisfied with results\n- **Invoice**: #1002, $2,800 — sent, awaiting payment (due ~2 weeks after completion)\n- **Satisfaction**: Very happy — said \"They look beautiful! I can't believe these are the same floors.\"",
+    "conv_3": "## Carlos Rivera\n\n### Job Interest\n- Tile installation in bathroom, approximately 60 sq ft\n- Prefers 12x24 porcelain tile in light gray\n- Initial inquiry — no estimate or invoice yet\n\n### Scheduling\n- In-home estimate appointment scheduled for upcoming Tuesday at 9 AM",
+    "conv_4": "- **Job Interest**: Guest bedroom — carpet removal and replacement with LVP\n- **Initial Inquiry**: Asked about carpet removal and LVP installation for guest bedroom\n- **Room Size**: ~180 sq ft (guest bedroom)\n- **Quote Accepted**: $1,850 for carpet removal, disposal, and LVP install (material + labor)\n- **Invoice #1004**: Paid — $1,850",
+    "conv_5": "## James Cooper\n\n### Job Details\n- Requested transition strip installation for 3 doorways where flooring changes between rooms\n\n### Relationship Notes\n- Initial inquiry via text message\n- Invoice #1005 completed and paid ($280 — 6 transition strips + installation labor)\n- Expressed satisfaction with the work — said transitions \"look really clean\"",
+    "conv_6": "# Maria Santos\n\n## Property\n- Recently purchased a condo (location not specified)\n\n## Job Interest\n- Herringbone pattern LVP installation for main living areas\n\n## Scheduling\n- Free in-home estimate scheduled for a Friday morning\n\n## Notes\n- New customer, initial inquiry\n- Sandro noted herringbone requires more material and labor than standard layout"
+  }
+}

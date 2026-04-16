@@ -1,167 +1,12 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import PhoneFrame from './components/PhoneFrame'
 import useDragScroll from './hooks/useDragScroll'
-import { initialConversations, initialActions } from './data/mockData'
+import { initialConversations } from './data/mockData'
 import { getFallbackDraft } from './data/aiDrafts'
-
-// ─── Pro Memory Content ────────────────────────────────────────────────────────
-const PRO_MEMORY_CONTENT = `# Rowan Flooring
-
-## Team
-- **Jesse Rowan** — Owner / Lead Installer (15 years experience)
-- **Marcus Rivera** — Installer (8 years experience)
-- **Brenda Rowan** — Office Manager / Scheduling
-
-## Services & Pricing
-
-| Service | Price Range |
-|---------|------------|
-| Luxury Vinyl Plank (LVP) | $4.50 – $6.50 / sq ft installed |
-| Hardwood Installation | $8 – $12 / sq ft installed |
-| Tile Installation | $7 – $10 / sq ft installed |
-| Floor Leveling (Self-Leveling Compound) | $2 – $4 / sq ft |
-| Carpet Removal & Disposal | $1 – $2 / sq ft |
-| Transition Strips | $15 – $20 each |
-| Moisture Testing (concrete subfloors) | $150 flat fee |
-| Free In-Home Estimates | Always |
-
-## Standard Policies
-- **Deposits**: 50% deposit required for jobs over $2,000
-- **Payment**: Due upon completion — Venmo, Zelle, check, or card
-- **Warranty**: 2-year workmanship warranty on all installations
-- **Scheduling**: Typically 1–2 week lead time
-- **Material Overage**: 10% extra material is standard to account for cuts around walls, corners, and doorways
-
-## Frequently Asked Questions
-
-**Q: Why is there a floor leveling / float charge?**
-Most subfloors aren't perfectly level. We apply self-leveling compound so your new floor sits flat and doesn't develop gaps or creaks over time. We can't see the subfloor condition until old flooring is removed, so this is often discovered during the job. It's needed on roughly 70% of installations.
-
-**Q: Why am I paying for more square footage than my room size?**
-Industry standard is 10% overage to account for cuts around walls, corners, and doorways. This ensures we have enough material to complete the job without delays.
-
-**Q: What are transition strips and why do I need them?**
-Transition strips go in every doorway where flooring meets another surface. They create a clean edge and prevent tripping hazards. Most homes need 4–8 strips.
-
-**Q: How long does installation take?**
-A typical living room + kitchen is 2 days. Larger homes or complex patterns (herringbone, diagonal) may take 3 days.
-
-**Q: Do I need to move my furniture?**
-Yes — we ask that rooms be cleared before we arrive. We can move heavy items for an additional fee.
-
-## Business Hours
-- Monday – Friday: 8 AM – 5 PM
-- Saturday: By appointment
-- Sunday: Closed
-`
-
-// ─── Customer Memory Content ───────────────────────────────────────────────────
-const CUSTOMER_MEMORY = {}
-
-CUSTOMER_MEMORY['conv_1'] = `# Sarah Chen
-## Customer Profile
-- **Phone**: (555) 123-4567
-- **Service Area**: Residential
-- **Communication**: Prefers text, quick responder
-
-## Job History
-- **AC Repair** — Compressor capacitor replacement, $380
-  - Completed, invoice overdue
-  - Promised to pay "by end of today" but hasn't yet
-
-## Notes
-- Friendly and appreciative of work quality
-- First-time customer
-`
-
-CUSTOMER_MEMORY['conv_2'] = `# Tom Rodriguez
-## Customer Profile
-- **Phone**: (555) 234-5678
-- **Service Area**: Residential
-- **Communication**: Direct, asks questions about charges
-
-## Job History
-- **Furnace Repair** — Ignitor replacement, $520
-  - Completed, invoice overdue (5 days past due)
-  - Questioning the $95 diagnostic fee
-
-## Notes
-- Expected diagnostic to be included with repair
-- Need to explain diagnostic fee policy clearly
-`
-
-CUSTOMER_MEMORY['conv_3'] = `# Mike Johnson
-## Customer Profile
-- **Phone**: (555) 345-6789
-- **Service Area**: Residential — Living room + kitchen
-- **Communication**: Prefers text, detail-oriented
-
-## Job History
-- **LVP Installation** — Living room & kitchen, $3,200
-  - Luxury vinyl plank material: $1,400
-  - Floor leveling compound: $450
-  - Installation labor: $1,350
-  - Invoice sent, due in 7 days
-
-## Notes
-- Subfloor had low spots discovered during old flooring removal
-- Questioning the $450 floor leveling charge — feels blindsided
-- Need to explain why leveling wasn't in original quote
-- Very happy with the finished floor quality
-`
-
-CUSTOMER_MEMORY['conv_4'] = `# David Kim
-## Customer Profile
-- **Phone**: (555) 456-7890
-- **Service Area**: Residential
-- **Communication**: Responsive, budget-conscious
-
-## Job History
-- **Full AC System** — 14 SEER Carrier unit, $5,800
-  - Unit + installation + ductwork modification
-  - Invoice sent, due in 10 days
-  - Requesting payment plan — can't pay $5,800 at once
-
-## Notes
-- Old unit was 18 years old
-- Very pleased with the new system's quiet operation
-- May need flexible payment terms
-`
-
-CUSTOMER_MEMORY['conv_5'] = `# Lisa Park
-## Customer Profile
-- **Phone**: (555) 567-8901
-- **Service Area**: Residential
-- **Communication**: Responsive, appreciative
-
-## Job History
-- **Water Heater Installation** — 50-gal Rheem, $2,100
-  - Emergency call — no hot water
-  - Old tank had crack at bottom
-  - Invoice just sent (1 hour ago)
-
-## Notes
-- Emergency customer — very grateful for fast response
-- Good candidate for proactive invoice summary
-`
-
-CUSTOMER_MEMORY['conv_6'] = `# Rachel Thompson
-## Customer Profile
-- **Phone**: (555) 678-9012
-- **Service Area**: Residential
-- **Communication**: Friendly, loyal repeat customer
-
-## Job History
-- **Annual HVAC Tune-up** — $150 (PAID)
-  - Filters replaced, coils cleaned, refrigerant levels checked
-
-## Notes
-- Annual maintenance customer — schedule next visit
-- Always pays promptly
-- Asking about next maintenance scheduling
-`
+import seedData from './data/seedData.json'
+import proMemoryContent from './data/proMemory.md?raw'
 
 // Helper: format ISO timestamp to readable time (e.g. "3:45 PM")
 function formatTime(isoString) {
@@ -193,7 +38,7 @@ function avatarColor(name) {
 }
 
 // Placeholder components — will be replaced by other agents
-function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSendDraft, onSendMessage, onShowReasoning, onEditDraft, onShowCustomerMemory, senderMode, onToggleSender }) {
+function ConversationView({ conversation, aiDraft, isLoadingDraft, pipelineProcessing, onBack, onSendDraft, onSendMessage, onShowReasoning, onEditDraft, onShowCustomerMemory, senderMode, onToggleSender }) {
   const messageListRef = useDragScroll('vertical')
   return (
     <div className="conversation-view">
@@ -265,6 +110,14 @@ function ConversationView({ conversation, aiDraft, isLoadingDraft, onBack, onSen
               <span></span><span></span><span></span>
             </div>
             <span className="typing-label">AI is drafting a reply...</span>
+          </div>
+        )}
+        {pipelineProcessing && (
+          <div className="ai-typing-indicator">
+            <div className="typing-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span className="typing-label">AI is analyzing this message...</span>
           </div>
         )}
       </div>
@@ -384,13 +237,15 @@ function InboxView({ conversations, actions, actionsSectionDismissed, onSelectCo
                     <span className="action-card-time">{action.title}</span>
                   </div>
                   <div className="action-card-buttons">
-                    <button className="action-btn action-btn-primary" onClick={() => onActionReply(action)}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 6.25 6.25 2 11.5 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                        <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                      AI Draft
-                    </button>
+                    {action.hasDraft !== false && (
+                      <button className="action-btn action-btn-primary" onClick={() => onActionReply(action)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <path d="M21 11.5C21 16.75 16.75 21 11.5 21C6.25 21 2 16.75 2 11.5C2 6.25 6.25 2 11.5 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                        AI Draft
+                      </button>
+                    )}
                     <button className="action-btn action-btn-secondary" onClick={() => onActionView(action)}>
                       View
                     </button>
@@ -439,7 +294,16 @@ function InboxView({ conversations, actions, actionsSectionDismissed, onSelectCo
   )
 }
 
-function AIReasoningModal({ draft, onClose }) {
+function AIReasoningModal({ draft, conversation, onClose }) {
+  // Resolve source messages from IDs
+  const resolvedSources = (draft.sourceMessageIds || []).map(id => {
+    const msg = conversation?.messages?.find(m => m.id === id)
+    return msg ? { text: msg.text, timestamp: msg.timestamp, from: msg.isFromCustomer ? conversation.customer?.name : 'Sandro (Pro)' } : null
+  }).filter(Boolean)
+
+  // Also support legacy sourceMessages format
+  const sources = resolvedSources.length > 0 ? resolvedSources : (draft.sourceMessages || [])
+
   return (
     <div className="reasoning-modal-overlay" onClick={onClose}>
       <div className="reasoning-modal" onClick={(e) => e.stopPropagation()}>
@@ -472,13 +336,24 @@ function AIReasoningModal({ draft, onClose }) {
               <span className="confidence-label">{Math.round(draft.confidence * 100)}%</span>
             </div>
           )}
-          {draft.sourceMessages && draft.sourceMessages.length > 0 && (
+          {sources.length > 0 && (
             <div className="reasoning-section">
               <h3 className="reasoning-section-title">Based on these messages</h3>
-              {draft.sourceMessages.map((msg, i) => (
+              {sources.map((msg, i) => (
                 <div key={i} className="reasoning-source-message">
                   <span className="reasoning-source-sender">{msg.from}</span>
                   <p className="reasoning-source-text">{msg.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {draft.memorySources && draft.memorySources.length > 0 && (
+            <div className="reasoning-section">
+              <h3 className="reasoning-section-title">From business memory</h3>
+              {draft.memorySources.map((src, i) => (
+                <div key={i} className="reasoning-source-message">
+                  <span className="reasoning-source-sender">{src.source}</span>
+                  <p className="reasoning-source-text">{src.text}</p>
                 </div>
               ))}
             </div>
@@ -489,7 +364,7 @@ function AIReasoningModal({ draft, onClose }) {
   )
 }
 
-function ProMemoryView({ onClose }) {
+function ProMemoryView({ proMemory, onClose }) {
   return (
     <div className="memory-view">
       <div className="memory-header">
@@ -503,15 +378,15 @@ function ProMemoryView({ onClose }) {
         <div className="memory-header-spacer" />
       </div>
       <div className="memory-content">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{PRO_MEMORY_CONTENT}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{proMemory}</ReactMarkdown>
       </div>
     </div>
   )
 }
 
-function CustomerMemoryView({ conversation, onClose }) {
-  const content = CUSTOMER_MEMORY[conversation.id] ||
-    `# ${conversation.customer?.name || 'Customer'}\n## Customer Notes\n\nNo notes yet for this customer.`
+function CustomerMemoryView({ conversation, customerMemories, onClose }) {
+  const content = customerMemories[conversation?.id] ||
+    `# ${conversation?.customer?.name || 'Customer'}\n\n## Notes\nNo notes yet for this customer.`
   return (
     <div className="memory-view">
       <div className="memory-header">
@@ -561,8 +436,12 @@ function NewConversationModal({ onClose, onCreate }) {
 
 export default function App() {
   const [conversations, setConversations] = useState(initialConversations)
-  const [actions] = useState(initialActions)
-  const [selectedConversation, setSelectedConversation] = useState(null)
+  const [actions, setActions] = useState(seedData.actions || [])
+  const [cachedDrafts] = useState(seedData.cachedDrafts || {})
+  const [customerMemories, setCustomerMemories] = useState(seedData.customerMemories || {})
+  const proMemory = proMemoryContent
+
+  const [selectedConvId, setSelectedConvId] = useState(null)
   const [aiDraft, setAiDraft] = useState(null)
   const [showReasoning, setShowReasoning] = useState(false)
   const [isLoadingDraft, setIsLoadingDraft] = useState(false)
@@ -572,56 +451,75 @@ export default function App() {
   const [showNewConversation, setShowNewConversation] = useState(false)
   const [senderMode, setSenderMode] = useState('pro')
   const [showCustomerMemory, setShowCustomerMemory] = useState(false)
+  const [pipelineProcessing, setPipelineProcessing] = useState(false)
 
-  const visibleActions = actions.filter(a => !dismissedActionIds.has(a.id))
+  const selectedConversation = selectedConvId
+    ? conversations.find(c => c.id === selectedConvId) || null
+    : null
 
-  // No refresh needed — conversations state is the source of truth
+  const visibleActions = useMemo(() => {
+    const priorityWeight = { high: 0, medium: 1, low: 2 };
+    return actions
+      .filter(a => !dismissedActionIds.has(a.id))
+      .sort((a, b) => (priorityWeight[a.priority] ?? 1) - (priorityWeight[b.priority] ?? 1));
+  }, [actions, dismissedActionIds]);
 
-  const fetchAiDraft = useCallback((conversationId) => {
+  const fetchAiDraft = useCallback(async (conversationId) => {
+    // Check cached draft first (instant for seeded data)
+    if (cachedDrafts[conversationId]) {
+      setAiDraft(cachedDrafts[conversationId])
+      return
+    }
+    // Fall back to API call for non-seeded conversations
     setIsLoadingDraft(true)
-    // Brief delay to show the typing indicator for demo effect
-    setTimeout(() => {
+    try {
       const conv = conversations.find(c => c.id === conversationId)
       const action = actions.find(a => a.conversationId === conversationId)
-      if (conv) {
-        const draft = getFallbackDraft(conv, action?.type || 'invoice_question')
-        setAiDraft(draft)
-      }
+      const res = await fetch('/api/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversation: conv,
+          actionType: action?.type,
+          proMemory,
+          customerMemory: customerMemories[conversationId] || ''
+        })
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setAiDraft(data)
+    } catch (err) {
+      console.error('Draft generation failed, using fallback:', err)
+      const conv = conversations.find(c => c.id === conversationId)
+      const action = actions.find(a => a.conversationId === conversationId)
+      if (conv) setAiDraft(getFallbackDraft(conv, action?.type || 'invoice_question'))
+    } finally {
       setIsLoadingDraft(false)
-    }, 800)
-  }, [conversations, actions])
+    }
+  }, [conversations, actions, cachedDrafts, proMemory, customerMemories])
 
   const handleSelectConversation = useCallback((id) => {
-    const conv = conversations.find(c => c.id === id)
-    if (conv) {
-      setSelectedConversation({ ...conv })
-      setAiDraft(null)
-    }
-  }, [conversations])
+    setSelectedConvId(id)
+    setAiDraft(null)
+  }, [])
 
   const handleBack = useCallback(() => {
-    setSelectedConversation(null)
+    setSelectedConvId(null)
     setAiDraft(null)
     setSenderMode('pro')
     setShowCustomerMemory(false)
   }, [])
 
   const handleActionReply = useCallback((action) => {
-    const conv = conversations.find(c => c.id === action.conversationId)
-    if (conv) {
-      setSelectedConversation({ ...conv, hasAIAction: true })
-      setAiDraft(null)
-      fetchAiDraft(action.conversationId)
-    }
-  }, [conversations, fetchAiDraft])
+    setSelectedConvId(action.conversationId)
+    setAiDraft(null)
+    fetchAiDraft(action.conversationId)
+  }, [fetchAiDraft])
 
   const handleActionView = useCallback((action) => {
-    const conv = conversations.find(c => c.id === action.conversationId)
-    if (conv) {
-      setSelectedConversation({ ...conv })
-      setAiDraft(null)
-    }
-  }, [conversations])
+    setSelectedConvId(action.conversationId)
+    setAiDraft(null)
+  }, [])
 
   const handleShowReasoning = useCallback(() => {
     setShowReasoning(true)
@@ -632,8 +530,8 @@ export default function App() {
   }, [])
 
   const handleSendDraft = useCallback((text) => {
-    if (!selectedConversation) return
-    const convId = selectedConversation.id
+    if (!selectedConvId) return
+    const convId = selectedConvId
     const newMessage = {
       id: `msg_${Date.now()}`,
       isFromCustomer: false,
@@ -641,23 +539,25 @@ export default function App() {
       timestamp: new Date().toISOString(),
       type: 'text',
     }
-    // Update selected conversation view
-    setSelectedConversation(prev => ({
-      ...prev,
-      messages: [...(prev.messages || []), newMessage],
-    }))
-    // Update master conversations list so inbox reflects the change
+    // Update master conversations list
     setConversations(prev => prev.map(c =>
       c.id === convId
         ? { ...c, messages: [...c.messages, newMessage], lastMessage: { text, timestamp: newMessage.timestamp, isFromCustomer: false }, unreadCount: 0 }
         : c
     ))
     setAiDraft(null)
-  }, [selectedConversation])
 
-  const handleSendMessage = useCallback((text) => {
-    if (!selectedConversation) return
-    const convId = selectedConversation.id
+    // Auto-dismiss the related action
+    const relatedAction = actions.find(a => a.conversationId === convId)
+    if (relatedAction) {
+      setActions(prev => prev.filter(a => a.id !== relatedAction.id))
+      setDismissedActionIds(prev => new Set([...prev, relatedAction.id]))
+    }
+  }, [selectedConvId, actions])
+
+  const handleSendMessage = useCallback(async (text) => {
+    if (!selectedConvId) return
+    const convId = selectedConvId
     const isFromCustomer = senderMode === 'customer'
     const newMessage = {
       id: `msg_${Date.now()}`,
@@ -666,16 +566,75 @@ export default function App() {
       timestamp: new Date().toISOString(),
       type: 'text',
     }
-    setSelectedConversation(prev => ({
-      ...prev,
-      messages: [...(prev.messages || []), newMessage],
-    }))
     setConversations(prev => prev.map(c =>
       c.id === convId
         ? { ...c, messages: [...c.messages, newMessage], lastMessage: { text, timestamp: newMessage.timestamp, isFromCustomer }, unreadCount: isFromCustomer ? c.unreadCount + 1 : 0 }
         : c
     ))
-  }, [selectedConversation, senderMode])
+
+    // ALL messages go through the pipeline (both pro and customer)
+    setPipelineProcessing(true)
+    try {
+      const updatedConv = conversations.find(c => c.id === convId)
+      const convWithNewMsg = {
+        ...updatedConv,
+        messages: [...(updatedConv?.messages || []), newMessage]
+      }
+      const res = await fetch('/api/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversation: convWithNewMsg,
+          message: newMessage,
+          proMemory,
+          customerMemory: customerMemories[convId] || '',
+          sender: senderMode
+        })
+      })
+      const result = await res.json()
+
+      // Memory updates apply for ALL messages (pro and customer)
+      if (result.customerMemoryUpdate) {
+        setCustomerMemories(prev => ({ ...prev, [convId]: result.customerMemoryUpdate }))
+      } else if (!customerMemories[convId] && isFromCustomer) {
+        const baseline = `# ${convWithNewMsg.customer?.name || 'Customer'}\n\n## Notes\n- ${newMessage.text}\n`
+        setCustomerMemories(prev => ({ ...prev, [convId]: baseline }))
+      }
+
+      // Action changes ONLY for customer messages (pro messages never create/modify actions)
+      if (isFromCustomer) {
+        if (result.shouldCreateAction) {
+          const priorityColors = { high: '#FF3B30', medium: '#007AFF', low: '#34C759' }
+          const newAction = {
+            id: `action_${Date.now()}`,
+            conversationId: convId,
+            type: result.actionType,
+            title: result.actionTitle || `Action for ${convWithNewMsg.customer?.name}`,
+            subtitle: result.actionSubtitle || '',
+            customerName: convWithNewMsg.customer?.name || 'Customer',
+            priority: result.actionPriority || 'medium',
+            accentColor: priorityColors[result.actionPriority] || '#007AFF',
+            hasDraft: result.hasSufficientContext && result.actionType !== 'invoice_request'
+          }
+          setActions(prev => {
+            const filtered = prev.filter(a => a.conversationId !== convId)
+            const weight = { high: 0, medium: 1, low: 2 }
+            return [...filtered, newAction].sort((a, b) => (weight[a.priority] ?? 1) - (weight[b.priority] ?? 1))
+          })
+        } else {
+          setActions(prev => prev.filter(a => a.conversationId !== convId))
+        }
+      }
+    } catch (err) {
+      console.error('Pipeline error:', err)
+      if (!customerMemories[convId] && isFromCustomer) {
+        const baseline = `# Customer\n\n## Notes\n- ${newMessage.text}\n`
+        setCustomerMemories(prev => ({ ...prev, [convId]: baseline }))
+      }
+    } finally {
+      setPipelineProcessing(false)
+    }
+  }, [selectedConvId, senderMode, conversations, proMemory, customerMemories])
 
   const handleEditDraft = useCallback((newText) => {
     setAiDraft(prev => prev ? { ...prev, draft: newText } : null)
@@ -728,7 +687,7 @@ export default function App() {
     }
     setConversations(prev => [newConv, ...prev])
     setShowNewConversation(false)
-    setSelectedConversation(newConv)
+    setSelectedConvId(id)
     setSenderMode('pro')
   }, [])
 
@@ -736,10 +695,11 @@ export default function App() {
     <div className="app-container">
       <PhoneFrame>
         {showProMemory ? (
-          <ProMemoryView onClose={handleCloseProMemory} />
+          <ProMemoryView proMemory={proMemory} onClose={handleCloseProMemory} />
         ) : showCustomerMemory && selectedConversation ? (
           <CustomerMemoryView
             conversation={selectedConversation}
+            customerMemories={customerMemories}
             onClose={handleCloseCustomerMemory}
           />
         ) : selectedConversation ? (
@@ -747,6 +707,7 @@ export default function App() {
             conversation={selectedConversation}
             aiDraft={aiDraft}
             isLoadingDraft={isLoadingDraft}
+            pipelineProcessing={pipelineProcessing}
             onBack={handleBack}
             onSendDraft={handleSendDraft}
             onSendMessage={handleSendMessage}
@@ -781,6 +742,7 @@ export default function App() {
       {showReasoning && aiDraft && (
         <AIReasoningModal
           draft={aiDraft}
+          conversation={selectedConversation}
           onClose={handleCloseReasoning}
         />
       )}

@@ -1,0 +1,290 @@
+{
+  "messageEvaluations": [
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_1",
+      "shouldCreateAction": false,
+      "reasoning": "The customer is requesting a quote/estimate for LVP installation. This is a general estimate request not tied to any specific invoice, so it does not fall under any of the supported action types. Rauen Flooring offers free in-home estimates, so Sandro can respond directly."
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_3",
+      "shouldCreateAction": false,
+      "reasoning": "This is a simple scheduling confirmation (\"Wednesday works. See you then.\") with no further ask or action needed. It does not relate to invoicing, payments, or any supported action type."
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_5",
+      "shouldCreateAction": false,
+      "reasoning": "Mike is confirming acceptance of the quote and asking about scheduling. This is a scheduling/appointment request, not related to invoicing, payments, or disputes. These types of messages are explicitly excluded from action creation."
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_8",
+      "shouldCreateAction": true,
+      "actionType": "invoice_summary",
+      "reasoning": "The invoice #1001 was just sent for $3,200 with multiple line items (material, floor leveling, labor), and the customer hasn't received a friendly breakdown of the charges yet. This is a good opportunity to proactively send an invoice summary to Mike while he's happy with the work, which can also facilitate prompt payment."
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_10",
+      "shouldCreateAction": true,
+      "actionType": "invoice_question",
+      "reasoning": "Mike is questioning and pushing back on the $450 floor leveling compound line item on Invoice #1001, expressing that he didn't ask for it and feels the amount is high. This is an invoice dispute that needs a prompt, clear explanation from Sandro to maintain the good relationship and secure payment."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_1",
+      "shouldCreateAction": false,
+      "reasoning": "The customer is asking a general question about whether Rauen Flooring offers hardwood refinishing services. This is a general service inquiry and not tied to any specific invoice, payment, or billing matter. No action should be created."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_3",
+      "shouldCreateAction": false,
+      "reasoning": "This is a simple scheduling confirmation. Patricia is agreeing to Sandro's proposed Thursday morning visit for an estimate. This is not related to invoicing, payments, or any of the supported action types."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_5",
+      "shouldCreateAction": false,
+      "reasoning": "Patricia is simply confirming she wants to proceed with the quoted refinishing job. This is a scheduling/job confirmation, not an invoice-related action. The invoice (#1002) has already been sent separately, but Patricia's message is just approving the quote — no invoice question, payment issue, or invoice request is being made."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_8",
+      "shouldCreateAction": true,
+      "actionType": "invoice_summary",
+      "reasoning": "The job is complete and Patricia is very happy with the results. An invoice (#1002 for $2,800) was just sent on the same day the job was completed, but no friendly breakdown of charges has been provided to the customer. This is a good opportunity to proactively send a summary of the invoice while the positive sentiment is high."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_10",
+      "shouldCreateAction": true,
+      "actionType": "invoice_summary",
+      "reasoning": "Invoice #1002 was just sent with multiple line items (sanding, stain, polyurethane, labor) and Patricia acknowledged receipt but hasn't seen a friendly breakdown yet. A proactive summary explaining each charge would be helpful and could prevent future questions or confusion."
+    },
+    {
+      "convId": "conv_3",
+      "messageId": "msg_3_1",
+      "shouldCreateAction": false,
+      "reasoning": "This is a general service inquiry and estimate request for tile installation. There is no existing invoice, and the customer is not asking for an invoice to be created — they're asking about availability and getting a quote. This falls outside the supported action types."
+    },
+    {
+      "convId": "conv_3",
+      "messageId": "msg_3_3",
+      "shouldCreateAction": false,
+      "reasoning": "Carlos is confirming his tile preference (12x24 porcelain, light gray) and agreeing to a Tuesday estimate appointment. This is a scheduling confirmation and general service discussion — no invoice exists and no invoice-related action is needed."
+    },
+    {
+      "convId": "conv_3",
+      "messageId": "msg_3_5",
+      "shouldCreateAction": false,
+      "reasoning": "This is a simple scheduling confirmation for an in-home estimate. No invoice exists, and the customer is just confirming the appointment time. This doesn't fall into any of the supported action types."
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_1",
+      "shouldCreateAction": false,
+      "reasoning": "This is a general service inquiry about carpet removal and LVP installation. The customer is asking for an estimate or expressing interest in services, not asking about an invoice or payment. No action type from the supported list applies here."
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_3",
+      "shouldCreateAction": false,
+      "reasoning": "Emily is responding to Sandro's offer to come measure and give a quote by suggesting Wednesday. This is a scheduling confirmation/appointment request, which is not an actionable invoice-related item. The invoice is already paid, and there are no billing questions or concerns."
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_5",
+      "shouldCreateAction": false,
+      "reasoning": "Emily is simply confirming she wants to proceed with the quoted job. This is a scheduling/job confirmation, not related to invoicing, payment issues, or any of the supported action types. The invoice is already marked as paid."
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_8",
+      "shouldCreateAction": false,
+      "reasoning": "The customer is confirming payment and expressing satisfaction. Invoice #1004 is already marked as paid. This is a simple thank-you/acknowledgment message with no further ask or action needed."
+    },
+    {
+      "convId": "conv_5",
+      "messageId": "msg_5_1",
+      "shouldCreateAction": false,
+      "reasoning": "The customer is asking about whether Sandro can handle a transition strip installation job. This is a general service inquiry/estimate request, not related to invoicing, payment, or any existing invoice dispute. The invoice #1005 is already paid, so no invoice-related action is needed."
+    },
+    {
+      "convId": "conv_5",
+      "messageId": "msg_5_3",
+      "shouldCreateAction": false,
+      "reasoning": "This is a simple acknowledgment and scheduling confirmation (\"Friday works. Thanks!\"). The invoice is already paid, and there's no question, dispute, or request that warrants an action. This falls under the \"do not create actions\" category for simple acknowledgments and scheduling confirmations."
+    },
+    {
+      "convId": "conv_5",
+      "messageId": "msg_5_6",
+      "shouldCreateAction": false,
+      "reasoning": "The invoice #1005 is already marked as paid, and James is simply confirming payment and expressing satisfaction. This is a thank-you/acknowledgment message with no further ask, so no action is needed."
+    },
+    {
+      "convId": "conv_6",
+      "messageId": "msg_6_1",
+      "shouldCreateAction": false,
+      "reasoning": "This is a general service inquiry about whether Sandro can install herringbone pattern LVP. There is no invoice involved, no payment issue, and no invoice request. This is an estimate/consultation request which falls outside the supported action types."
+    },
+    {
+      "convId": "conv_6",
+      "messageId": "msg_6_3",
+      "shouldCreateAction": false,
+      "reasoning": "This is a scheduling confirmation for a free in-home estimate. No invoice exists, and the customer is simply agreeing to a time for the estimate visit. This does not fall under any supported action type."
+    }
+  ],
+  "customerQuestions": [
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_1",
+      "text": "Hi Sandro, I'm looking to get luxury vinyl plank installed in my living room and kitchen. Can you give me a quote?"
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_5",
+      "text": "Looks good, let's do it. When can you start?"
+    },
+    {
+      "convId": "conv_1",
+      "messageId": "msg_1_10",
+      "text": "What's the float charge for? $450 seems like a lot for something I didn't ask for."
+    },
+    {
+      "convId": "conv_2",
+      "messageId": "msg_2_1",
+      "text": "Hi Sandro, my hardwood floors in the master bedroom and hallway are looking pretty worn. Do you do refinishing?"
+    },
+    {
+      "convId": "conv_3",
+      "messageId": "msg_3_1",
+      "text": "Hey Sandro, I need tile installed in my bathroom. It's about 60 sq ft. Can you do it?"
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_1",
+      "text": "Hi Sandro, I have old carpet in my guest bedroom that I'd like to rip out and replace with LVP. Is that something you can do?"
+    },
+    {
+      "convId": "conv_4",
+      "messageId": "msg_4_3",
+      "text": "How about Wednesday?"
+    },
+    {
+      "convId": "conv_5",
+      "messageId": "msg_5_1",
+      "text": "Hey Sandro, I need transition strips installed between my rooms — 3 doorways where the flooring changes. Can you handle that?"
+    },
+    {
+      "convId": "conv_6",
+      "messageId": "msg_6_1",
+      "text": "Hi Sandro, I just bought a condo and I'm looking at herringbone LVP for the main living areas. Do you install that pattern?"
+    }
+  ],
+  "actionsCreated": [
+    {
+      "actionId": "action_1",
+      "convId": "conv_1",
+      "type": "invoice_question",
+      "triggerMessageId": "msg_1_10",
+      "reasoning": "Mike is questioning and pushing back on the $450 floor leveling compound line item on Invoice #1001, expressing that he didn't ask for it and feels the amount is high. This is an invoice dispute that needs a prompt, clear explanation from Sandro to maintain the good relationship and secure payment."
+    },
+    {
+      "actionId": "action_2",
+      "convId": "conv_2",
+      "type": "invoice_summary",
+      "triggerMessageId": "msg_2_10",
+      "reasoning": "Invoice #1002 was just sent with multiple line items (sanding, stain, polyurethane, labor) and Patricia acknowledged receipt but hasn't seen a friendly breakdown yet. A proactive summary explaining each charge would be helpful and could prevent future questions or confusion."
+    }
+  ],
+  "faqSources": [
+    {
+      "question": "Hi Sandro, I'm looking to get luxury vinyl plank installed in my living room and kitchen. Can you give me a quote?",
+      "messageId": "msg_1_1",
+      "convId": "conv_1"
+    },
+    {
+      "question": "Looks good, let's do it. When can you start?",
+      "messageId": "msg_1_5",
+      "convId": "conv_1"
+    },
+    {
+      "question": "What's the float charge for? $450 seems like a lot for something I didn't ask for.",
+      "messageId": "msg_1_10",
+      "convId": "conv_1"
+    },
+    {
+      "question": "Hi Sandro, my hardwood floors in the master bedroom and hallway are looking pretty worn. Do you do refinishing?",
+      "messageId": "msg_2_1",
+      "convId": "conv_2"
+    },
+    {
+      "question": "Hey Sandro, I need tile installed in my bathroom. It's about 60 sq ft. Can you do it?",
+      "messageId": "msg_3_1",
+      "convId": "conv_3"
+    },
+    {
+      "question": "Hi Sandro, I have old carpet in my guest bedroom that I'd like to rip out and replace with LVP. Is that something you can do?",
+      "messageId": "msg_4_1",
+      "convId": "conv_4"
+    },
+    {
+      "question": "How about Wednesday?",
+      "messageId": "msg_4_3",
+      "convId": "conv_4"
+    },
+    {
+      "question": "Hey Sandro, I need transition strips installed between my rooms — 3 doorways where the flooring changes. Can you handle that?",
+      "messageId": "msg_5_1",
+      "convId": "conv_5"
+    },
+    {
+      "question": "Hi Sandro, I just bought a condo and I'm looking at herringbone LVP for the main living areas. Do you install that pattern?",
+      "messageId": "msg_6_1",
+      "convId": "conv_6"
+    }
+  ],
+  "testResults": [
+    {
+      "name": "Scheduling message (should NOT create action)",
+      "passed": true,
+      "expected": {
+        "shouldCreateAction": false
+      },
+      "actual": {
+        "shouldCreateAction": false,
+        "actionType": "none",
+        "hasSufficientContext": true
+      },
+      "reasoning": "This is a scheduling/appointment request, which is explicitly listed as something that should not trigger an action. There is no invoice involved and no billing-related question."
+    },
+    {
+      "name": "Warranty question (should NOT create action)",
+      "passed": true,
+      "expected": {
+        "shouldCreateAction": false
+      },
+      "actual": {
+        "shouldCreateAction": false
+      },
+      "reasoning": "This is a warranty question about a lifting plank, not related to any invoice or payment matter. It falls under general warranty inquiries, which are explicitly excluded from action creation unless they involve invoicing. Sandro should respond, but no structured action is needed."
+    },
+    {
+      "name": "Roberto's demo message (should create invoice_request, no draft)",
+      "passed": true,
+      "expected": {
+        "shouldCreateAction": true,
+        "actionType": "invoice_request"
+      },
+      "actual": {
+        "shouldCreateAction": true,
+        "actionType": "invoice_request",
+        "hasSufficientContext": false
+      },
+      "reasoning": "The customer is explicitly requesting an invoice to be sent for work done at their house in Miami. This is a clear invoice request where no invoice currently exists in the conversation."
+    }
+  ]
+}

@@ -13,82 +13,14 @@ function datestamp(offset) {
   return NOW + offset;
 }
 
-// ─── Conversation 1: Sarah Chen — AC Repair ────────────────────────────────
+// ─── Conversation 1: Mike Johnson — LVP Installation (invoice_question) ────
 
 const conv1 = {
   id: "conv_1",
-  customer: { name: "Sarah Chen", initials: "SC", phone: "(555) 123-4567" },
+  customer: { name: "Mike Johnson", initials: "MJ", phone: "(239) 555-1234" },
   invoice: {
     id: "inv_1001",
     number: "1001",
-    total: 380,
-    status: "overdue",
-    dueDate: datestamp(-3 * DAY),
-    sentDate: datestamp(-5 * DAY),
-    lineItems: [
-      { description: "AC Diagnostic", amount: 95 },
-      { description: "Compressor capacitor replacement", amount: 135 },
-      { description: "Labor (1.5 hrs)", amount: 150 },
-    ],
-  },
-  messages: [
-    { id: "msg_1_1", text: "Hi! I'd like to schedule an AC repair — my unit is blowing warm air.", timestamp: ts(-7 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_1_2", text: "Hey Sarah! I can come out tomorrow morning between 9-11. Does that work for you?", timestamp: ts(-7 * DAY + 0.5 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_1_3", text: "Perfect, tomorrow morning works!", timestamp: ts(-7 * DAY + 1 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_1_4", text: "On my way! Should be there in about 20 minutes.", timestamp: ts(-6 * DAY), isFromCustomer: false, type: "text" },
-    { id: "msg_1_5", text: "Great, see you soon!", timestamp: ts(-6 * DAY + 5 * 60000), isFromCustomer: true, type: "text" },
-    { id: "msg_1_6", text: "All done! Your compressor capacitor was failing — that's what caused the warm air. Everything is running cold again. I'll send the invoice over shortly.", timestamp: ts(-6 * DAY + 2 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_1_7", text: "Thank you so much, it already feels cooler in here!", timestamp: ts(-6 * DAY + 2.5 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_1_8", text: "Invoice #1001 for $380.00 has been sent.", timestamp: ts(-5 * DAY), isFromCustomer: false, type: "invoice" },
-    { id: "msg_1_9", text: "Got it, I'll pay by end of today!", timestamp: ts(-1 * DAY + 14.5 * HOUR), isFromCustomer: true, type: "text" },
-  ],
-  lastMessage: { text: "Got it, I'll pay by end of today!", timestamp: ts(-1 * DAY + 14.5 * HOUR), isFromCustomer: true },
-  unreadCount: 1,
-  hasAIAction: true,
-  actionType: "payment_followup",
-};
-
-// ─── Conversation 2: Tom Rodriguez — Furnace Repair ─────────────────────────
-
-const conv2 = {
-  id: "conv_2",
-  customer: { name: "Tom Rodriguez", initials: "TR", phone: "(555) 234-5678" },
-  invoice: {
-    id: "inv_1002",
-    number: "1002",
-    total: 520,
-    status: "overdue",
-    dueDate: datestamp(-5 * DAY),
-    sentDate: datestamp(-8 * DAY),
-    lineItems: [
-      { description: "Furnace diagnostic", amount: 95 },
-      { description: "Ignitor replacement", amount: 185 },
-      { description: "Labor (2 hrs)", amount: 240 },
-    ],
-  },
-  messages: [
-    { id: "msg_2_1", text: "Hey, my furnace isn't turning on. Can you take a look?", timestamp: ts(-10 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_2_2", text: "Sure thing Tom. I can come by Thursday afternoon. Will you be home around 2pm?", timestamp: ts(-10 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_2_3", text: "Yep, I'll be here. Thanks!", timestamp: ts(-10 * DAY + 1.5 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_2_4", text: "All fixed! Your ignitor had cracked — replaced it and the furnace is firing up fine now. You should feel heat within a few minutes.", timestamp: ts(-9 * DAY + 3 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_2_5", text: "Awesome, it's already warming up. Appreciate the quick fix.", timestamp: ts(-9 * DAY + 3.5 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_2_6", text: "Invoice #1002 for $520.00 has been sent.", timestamp: ts(-8 * DAY), isFromCustomer: false, type: "invoice" },
-    { id: "msg_2_7", text: "Hey what's the diagnostic fee for? I thought the inspection was included with the repair.", timestamp: ts(-2 * DAY), isFromCustomer: true, type: "text" },
-  ],
-  lastMessage: { text: "Hey what's the diagnostic fee for? I thought the inspection was included with the repair.", timestamp: ts(-2 * DAY), isFromCustomer: true },
-  unreadCount: 1,
-  hasAIAction: true,
-  actionType: "invoice_question",
-};
-
-// ─── Conversation 3: Mike Johnson — Flooring Installation ───────────────────
-
-const conv3 = {
-  id: "conv_3",
-  customer: { name: "Mike Johnson", initials: "MJ", phone: "(555) 345-6789" },
-  invoice: {
-    id: "inv_1003",
-    number: "1003",
     total: 3200,
     status: "sent",
     dueDate: datestamp(7 * DAY),
@@ -100,119 +32,159 @@ const conv3 = {
     ],
   },
   messages: [
-    { id: "msg_3_1", text: "Hi Jesse, I'm interested in getting luxury vinyl plank installed in my living room and kitchen. Can you give me a quote?", timestamp: ts(-14 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_3_2", text: "Hey Mike! I'd love to help. I can swing by this week to measure and take a look at the subfloor. How's Wednesday?", timestamp: ts(-14 * DAY + 2 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_3_3", text: "Wednesday works. See you then.", timestamp: ts(-14 * DAY + 3 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_3_4", text: "Thanks for showing me around today. I've put together a quote for $3,200 which covers the vinyl plank material, floor prep, and installation. I'll send it over now.", timestamp: ts(-12 * DAY), isFromCustomer: false, type: "text" },
-    { id: "msg_3_5", text: "Looks good, let's do it. When can you start?", timestamp: ts(-12 * DAY + 4 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_3_6", text: "I can start next Monday. Should take about 2 days. I'll confirm the morning of.", timestamp: ts(-12 * DAY + 5 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_3_7", text: "Floors are done! Everything looks great. Avoid heavy furniture for 24 hours to let the adhesive set fully. I'll send the invoice over.", timestamp: ts(-3 * DAY), isFromCustomer: false, type: "text" },
-    { id: "msg_3_8", text: "They look amazing, thank you!", timestamp: ts(-3 * DAY + 1 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_3_9", text: "Invoice #1003 for $3,200.00 has been sent.", timestamp: ts(-1 * DAY), isFromCustomer: false, type: "invoice" },
-    { id: "msg_3_10", text: "What's the float charge for? $450 seems like a lot for something I didn't ask for.", timestamp: ts(-0 * DAY + 9 * HOUR - NOW % DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_1_1", text: "Hi Sandro, I'm looking to get luxury vinyl plank installed in my living room and kitchen. Can you give me a quote?", timestamp: ts(-14 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_1_2", text: "Hey Mike! I'd be happy to help. I can come by this week to measure and check the subfloor. How's Wednesday afternoon?", timestamp: ts(-14 * DAY + 2 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_1_3", text: "Wednesday works. See you then.", timestamp: ts(-14 * DAY + 3 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_1_4", text: "Thanks for showing me the space today Mike. Living room + kitchen comes out to about 480 sq ft. The subfloor has a few low spots that'll need leveling before we can lay the planks. I've put together a quote for $3,200 covering material, floor prep, and labor. Sending it over now.", timestamp: ts(-12 * DAY), isFromCustomer: false, type: "text" },
+    { id: "msg_1_5", text: "Looks good, let's do it. When can you start?", timestamp: ts(-12 * DAY + 4 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_1_6", text: "I can start next Monday. Should take about 2 days with the leveling. Fabiana will be there too so we'll knock it out. I'll confirm the morning of.", timestamp: ts(-12 * DAY + 5 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_1_7", text: "Floors are done! Everything came out great. Give it 24 hours before moving heavy furniture back. I'll send the invoice over.", timestamp: ts(-3 * DAY), isFromCustomer: false, type: "text" },
+    { id: "msg_1_8", text: "They look amazing, thank you!", timestamp: ts(-3 * DAY + 1 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_1_9", text: "Invoice #1001 for $3,200.00 has been sent.", timestamp: ts(-1 * DAY), isFromCustomer: false, type: "invoice" },
+    { id: "msg_1_10", text: "What's the float charge for? $450 seems like a lot for something I didn't ask for.", timestamp: ts(-2 * HOUR), isFromCustomer: true, type: "text" },
   ],
-  lastMessage: { text: "What's the float charge for? $450 seems like a lot for something I didn't ask for.", timestamp: ts(-0 * DAY + 9 * HOUR - NOW % DAY), isFromCustomer: true },
+  lastMessage: { text: "What's the float charge for? $450 seems like a lot for something I didn't ask for.", timestamp: ts(-2 * HOUR), isFromCustomer: true },
   unreadCount: 1,
   hasAIAction: true,
   actionType: "invoice_question",
 };
 
-// ─── Conversation 4: David Kim — Full AC System Installation ────────────────
+// ─── Conversation 2: Patricia Almeida — Hardwood Refinishing (invoice_summary) ─
 
-const conv4 = {
-  id: "conv_4",
-  customer: { name: "David Kim", initials: "DK", phone: "(555) 456-7890" },
+const conv2 = {
+  id: "conv_2",
+  customer: { name: "Patricia Almeida", initials: "PA", phone: "(239) 555-2345" },
   invoice: {
-    id: "inv_1004",
-    number: "1004",
-    total: 5800,
-    status: "sent",
-    dueDate: datestamp(10 * DAY),
-    sentDate: datestamp(-2 * DAY),
-    lineItems: [
-      { description: "14 SEER Carrier AC unit", amount: 3200 },
-      { description: "Installation labor", amount: 1800 },
-      { description: "Ductwork modification", amount: 800 },
-    ],
-  },
-  messages: [
-    { id: "msg_4_1", text: "Hi, I need a new AC system. My current one is 18 years old and barely keeping up. Can you come out and give me an estimate?", timestamp: ts(-21 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_4_2", text: "Absolutely David. I do free in-home estimates. How's this Friday morning?", timestamp: ts(-21 * DAY + 3 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_4_3", text: "Friday works, see you then.", timestamp: ts(-21 * DAY + 4 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_4_4", text: "Thanks for having me out. Based on your home's size and ductwork, I'd recommend a 14 SEER Carrier unit. Total estimate comes to $5,800 including the unit, installation, and some ductwork modifications you'll need. I'll send the detailed estimate now.", timestamp: ts(-19 * DAY), isFromCustomer: false, type: "text" },
-    { id: "msg_4_5", text: "OK let's go ahead with it. When can you install?", timestamp: ts(-18 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_4_6", text: "Great! I can schedule you for next Tuesday. Installation usually takes a full day. I'll confirm the night before.", timestamp: ts(-18 * DAY + 2 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_4_7", text: "New AC is in and running! Set it to 72 and let it run for a few hours to stabilize. You should notice a huge difference in efficiency over your old unit. I'll send the invoice over.", timestamp: ts(-4 * DAY), isFromCustomer: false, type: "text" },
-    { id: "msg_4_8", text: "It's so quiet compared to the old one, love it.", timestamp: ts(-4 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_4_9", text: "Invoice #1004 for $5,800.00 has been sent.", timestamp: ts(-2 * DAY), isFromCustomer: false, type: "invoice" },
-    { id: "msg_4_10", text: "This is way more than I was expecting. I can't pay $5,800 all at once. Is there any way to break this up?", timestamp: ts(-1 * DAY), isFromCustomer: true, type: "text" },
-  ],
-  lastMessage: { text: "This is way more than I was expecting. I can't pay $5,800 all at once. Is there any way to break this up?", timestamp: ts(-1 * DAY), isFromCustomer: true },
-  unreadCount: 1,
-  hasAIAction: true,
-  actionType: "payment_plan",
-};
-
-// ─── Conversation 5: Lisa Park — Water Heater Installation ──────────────────
-
-const conv5 = {
-  id: "conv_5",
-  customer: { name: "Lisa Park", initials: "LP", phone: "(555) 567-8901" },
-  invoice: {
-    id: "inv_1005",
-    number: "1005",
-    total: 2100,
+    id: "inv_1002",
+    number: "1002",
+    total: 2800,
     status: "sent",
     dueDate: datestamp(14 * DAY),
     sentDate: datestamp(-1 * HOUR),
     lineItems: [
-      { description: "50-gal Rheem water heater", amount: 950 },
-      { description: "Installation labor", amount: 850 },
-      { description: "Permit fees", amount: 150 },
-      { description: "Old unit disposal", amount: 150 },
+      { description: "Hardwood sanding & prep", amount: 600 },
+      { description: "Stain application (Provincial)", amount: 450 },
+      { description: "Polyurethane finish (3 coats)", amount: 550 },
+      { description: "Labor", amount: 1200 },
     ],
   },
   messages: [
-    { id: "msg_5_1", text: "Hi, I have no hot water at all this morning. Can someone come out today?", timestamp: ts(-4 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_5_2", text: "Oh no! I can come out this afternoon around 3pm to take a look. Hang tight, Lisa.", timestamp: ts(-4 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_5_3", text: "Thank you so much, that would be great.", timestamp: ts(-4 * DAY + 1.5 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_5_4", text: "Took a look — your water heater tank has a crack at the bottom, unfortunately it can't be repaired. I'd recommend replacing it with a new 50-gallon Rheem. I can do the install tomorrow if you'd like.", timestamp: ts(-4 * DAY + 6 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_5_5", text: "Yes please, go ahead. I definitely need hot water back!", timestamp: ts(-4 * DAY + 7 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_5_6", text: "New water heater is installed and running! You should have hot water within about 30-40 minutes. I'll get the invoice together for you.", timestamp: ts(-3 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_5_7", text: "Already warming up, you're a lifesaver!", timestamp: ts(-2.5 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_5_8", text: "Invoice #1005 for $2,100.00 has been sent.", timestamp: ts(-1 * HOUR), isFromCustomer: false, type: "invoice" },
+    { id: "msg_2_1", text: "Hi Sandro, my hardwood floors in the master bedroom and hallway are looking pretty worn. Do you do refinishing?", timestamp: ts(-12 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_2_2", text: "Hey Patricia! Yes we do. I can come take a look and see what shape they're in. How about Thursday morning?", timestamp: ts(-12 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_2_3", text: "Thursday morning works great.", timestamp: ts(-12 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_2_4", text: "Good news — your floors are solid oak and in great shape underneath the wear. Just need a full sand-down, stain, and 3 coats of poly. I'd recommend Provincial stain, it'll bring out the natural grain. Quote comes to $2,800 for everything.", timestamp: ts(-10 * DAY), isFromCustomer: false, type: "text" },
+    { id: "msg_2_5", text: "Provincial sounds perfect. Let's go with that!", timestamp: ts(-10 * DAY + 3 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_2_6", text: "Great! I can start Monday. It'll take about 3 days — sanding, stain, then the poly coats need to dry between applications. You'll want to keep off the floors for 24 hours after the last coat.", timestamp: ts(-10 * DAY + 4 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_2_7", text: "All done Patricia! The floors turned out beautiful. The Provincial stain really brought out the grain. Remember, no shoes on them for 48 hours and avoid rugs for a week while the finish fully cures.", timestamp: ts(-3 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_2_8", text: "They look beautiful! I can't believe these are the same floors.", timestamp: ts(-2.5 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_2_9", text: "Invoice #1002 for $2,800.00 has been sent.", timestamp: ts(-1 * HOUR), isFromCustomer: false, type: "invoice" },
+    { id: "msg_2_10", text: "Got it, I'll take a look!", timestamp: ts(-0.5 * HOUR), isFromCustomer: true, type: "text" },
   ],
-  lastMessage: { text: "Invoice #1005 for $2,100.00 has been sent.", timestamp: ts(-1 * HOUR), isFromCustomer: false },
+  lastMessage: { text: "Got it, I'll take a look!", timestamp: ts(-0.5 * HOUR), isFromCustomer: true },
   unreadCount: 0,
   hasAIAction: true,
   actionType: "invoice_summary",
 };
 
-// ─── Conversation 6: Rachel Thompson — Annual HVAC Maintenance ──────────────
+// ─── Conversation 3: Carlos Rivera — Tile Installation (no action, scheduling) ─
+
+const conv3 = {
+  id: "conv_3",
+  customer: { name: "Carlos Rivera", initials: "CR", phone: "(239) 555-3456" },
+  invoice: null,
+  messages: [
+    { id: "msg_3_1", text: "Hey Sandro, I need tile installed in my bathroom. It's about 60 sq ft. Can you do it?", timestamp: ts(-3 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_3_2", text: "Hey Carlos! Absolutely. What kind of tile are you thinking? I can come out and measure up. How's Tuesday work for you?", timestamp: ts(-3 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_3_3", text: "I'm thinking a 12x24 porcelain in a light gray. Tuesday works.", timestamp: ts(-3 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_3_4", text: "Great choice, that'll look sharp. I'll swing by Tuesday morning to measure and we can go over the layout. What time works best?", timestamp: ts(-3 * DAY + 3 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_3_5", text: "Tuesday at 9am works, see you then!", timestamp: ts(-3 * DAY + 4 * HOUR), isFromCustomer: true, type: "text" },
+  ],
+  lastMessage: { text: "Tuesday at 9am works, see you then!", timestamp: ts(-3 * DAY + 4 * HOUR), isFromCustomer: true },
+  unreadCount: 0,
+  hasAIAction: false,
+  actionType: null,
+};
+
+// ─── Conversation 4: Emily Watson — Carpet Removal + LVP (no action, paid) ────
+
+const conv4 = {
+  id: "conv_4",
+  customer: { name: "Emily Watson", initials: "EW", phone: "(239) 555-4567" },
+  invoice: {
+    id: "inv_1004",
+    number: "1004",
+    total: 1850,
+    status: "paid",
+    dueDate: datestamp(-5 * DAY),
+    sentDate: datestamp(-10 * DAY),
+    paidDate: datestamp(-7 * DAY),
+    lineItems: [
+      { description: "Carpet removal & disposal", amount: 250 },
+      { description: "LVP material", amount: 650 },
+      { description: "Installation labor", amount: 950 },
+    ],
+  },
+  messages: [
+    { id: "msg_4_1", text: "Hi Sandro, I have old carpet in my guest bedroom that I'd like to rip out and replace with LVP. Is that something you can do?", timestamp: ts(-18 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_4_2", text: "Hey Emily! Yep, we do carpet removal and LVP all the time. I can come measure and give you a quote. How's this week?", timestamp: ts(-18 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_4_3", text: "How about Wednesday?", timestamp: ts(-18 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_4_4", text: "Perfect. Came out to about 180 sq ft. I can do carpet removal, disposal, and LVP install for $1,850. That includes material and labor.", timestamp: ts(-16 * DAY), isFromCustomer: false, type: "text" },
+    { id: "msg_4_5", text: "Sounds great, let's do it!", timestamp: ts(-16 * DAY + 3 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_4_6", text: "All done Emily! Carpet's gone and the new LVP is in. Room looks completely different. I'll send the invoice over.", timestamp: ts(-10 * DAY + 4 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_4_7", text: "Invoice #1004 for $1,850.00 has been sent.", timestamp: ts(-10 * DAY), isFromCustomer: false, type: "invoice" },
+    { id: "msg_4_8", text: "Paid! Thanks Sandro, floors look great.", timestamp: ts(-7 * DAY), isFromCustomer: true, type: "text" },
+  ],
+  lastMessage: { text: "Paid! Thanks Sandro, floors look great.", timestamp: ts(-7 * DAY), isFromCustomer: true },
+  unreadCount: 0,
+  hasAIAction: false,
+  actionType: null,
+};
+
+// ─── Conversation 5: James Cooper — Transition Strips (no action, paid) ────────
+
+const conv5 = {
+  id: "conv_5",
+  customer: { name: "James Cooper", initials: "JC", phone: "(239) 555-5678" },
+  invoice: {
+    id: "inv_1005",
+    number: "1005",
+    total: 280,
+    status: "paid",
+    dueDate: datestamp(-10 * DAY),
+    sentDate: datestamp(-14 * DAY),
+    paidDate: datestamp(-12 * DAY),
+    lineItems: [
+      { description: "Transition strips x6", amount: 120 },
+      { description: "Installation labor", amount: 160 },
+    ],
+  },
+  messages: [
+    { id: "msg_5_1", text: "Hey Sandro, I need transition strips installed between my rooms — 3 doorways where the flooring changes. Can you handle that?", timestamp: ts(-16 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_5_2", text: "Hey James! Yeah that's a quick job. I can come by Friday. 6 strips should cover 3 doorways (top and bottom). $280 total including install.", timestamp: ts(-16 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_5_3", text: "Friday works. Thanks!", timestamp: ts(-16 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_5_4", text: "All done! Transitions are in and looking clean. Sending the invoice now.", timestamp: ts(-14 * DAY + 3 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_5_5", text: "Invoice #1005 for $280.00 has been sent.", timestamp: ts(-14 * DAY), isFromCustomer: false, type: "invoice" },
+    { id: "msg_5_6", text: "Paid. Thanks again, the transitions look really clean.", timestamp: ts(-12 * DAY), isFromCustomer: true, type: "text" },
+  ],
+  lastMessage: { text: "Paid. Thanks again, the transitions look really clean.", timestamp: ts(-12 * DAY), isFromCustomer: true },
+  unreadCount: 0,
+  hasAIAction: false,
+  actionType: null,
+};
+
+// ─── Conversation 6: Maria Santos — Herringbone LVP Estimate (no action) ──────
 
 const conv6 = {
   id: "conv_6",
-  customer: { name: "Rachel Thompson", initials: "RT", phone: "(555) 678-9012" },
-  invoice: {
-    id: "inv_1006",
-    number: "1006",
-    total: 150,
-    status: "paid",
-    dueDate: datestamp(-7 * DAY),
-    sentDate: datestamp(-10 * DAY),
-    paidDate: datestamp(-7 * DAY),
-    lineItems: [{ description: "Annual HVAC tune-up", amount: 150 }],
-  },
+  customer: { name: "Maria Santos", initials: "MS", phone: "(239) 555-6789" },
+  invoice: null,
   messages: [
-    { id: "msg_6_1", text: "Hi Jesse, it's that time of year again! Can I schedule my annual HVAC maintenance?", timestamp: ts(-14 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_6_2", text: "Hey Rachel! Of course. How's next Wednesday morning?", timestamp: ts(-14 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_6_3", text: "Wednesday at 10am works perfectly.", timestamp: ts(-14 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
-    { id: "msg_6_4", text: "All done with the tune-up! Everything looks good — filters replaced, coils cleaned, refrigerant levels are solid. System is running efficiently. I'll send the invoice.", timestamp: ts(-10 * DAY + 2 * HOUR), isFromCustomer: false, type: "text" },
-    { id: "msg_6_5", text: "Invoice #1006 for $150.00 has been sent.", timestamp: ts(-10 * DAY), isFromCustomer: false, type: "invoice" },
-    { id: "msg_6_6", text: "Paid! Thanks Jesse.", timestamp: ts(-7 * DAY), isFromCustomer: true, type: "text" },
-    { id: "msg_6_7", text: "Thanks! When should I schedule my next maintenance?", timestamp: ts(-2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_6_1", text: "Hi Sandro, I just bought a condo and I'm looking at herringbone LVP for the main living areas. Do you install that pattern?", timestamp: ts(-2 * DAY), isFromCustomer: true, type: "text" },
+    { id: "msg_6_2", text: "Hey Maria! Yes we do herringbone. It's one of my favorite patterns. I'd need to come out and measure to give you an accurate quote — it takes a bit more material and labor than a standard layout. I offer free in-home estimates, when works for you?", timestamp: ts(-2 * DAY + 1 * HOUR), isFromCustomer: false, type: "text" },
+    { id: "msg_6_3", text: "Sounds good, Friday morning works for the estimate.", timestamp: ts(-2 * DAY + 2 * HOUR), isFromCustomer: true, type: "text" },
+    { id: "msg_6_4", text: "Perfect, I'll see you Friday morning. Looking forward to seeing the space!", timestamp: ts(-2 * DAY + 3 * HOUR), isFromCustomer: false, type: "text" },
   ],
-  lastMessage: { text: "Thanks! When should I schedule my next maintenance?", timestamp: ts(-2 * HOUR), isFromCustomer: true },
+  lastMessage: { text: "Sounds good, Friday morning works for the estimate.", timestamp: ts(-2 * DAY + 2 * HOUR), isFromCustomer: true },
   unreadCount: 0,
   hasAIAction: false,
   actionType: null,
@@ -221,56 +193,3 @@ const conv6 = {
 // ─── Exports ────────────────────────────────────────────────────────────────
 
 export const initialConversations = [conv1, conv2, conv3, conv4, conv5, conv6];
-
-export const initialActions = [
-  {
-    id: "action_1",
-    conversationId: "conv_1",
-    type: "payment_followup",
-    title: "Sarah promised to pay yesterday",
-    subtitle: "Follow up on missed payment deadline",
-    customerName: "Sarah Chen",
-    priority: "high",
-    accentColor: "#FF9500",
-  },
-  {
-    id: "action_2",
-    conversationId: "conv_2",
-    type: "invoice_question",
-    title: "Tom is questioning the diagnostic fee",
-    subtitle: "Explain the $95 diagnostic charge",
-    customerName: "Tom Rodriguez",
-    priority: "medium",
-    accentColor: "#007AFF",
-  },
-  {
-    id: "action_3",
-    conversationId: "conv_3",
-    type: "invoice_question",
-    title: "Mike is questioning the float charge",
-    subtitle: "Explain the $450 leveling compound fee",
-    customerName: "Mike Johnson",
-    priority: "medium",
-    accentColor: "#007AFF",
-  },
-  {
-    id: "action_4",
-    conversationId: "conv_4",
-    type: "payment_plan",
-    title: "David can't pay $5,800 at once",
-    subtitle: "Offer a payment plan option",
-    customerName: "David Kim",
-    priority: "high",
-    accentColor: "#0061FF",
-  },
-  {
-    id: "action_5",
-    conversationId: "conv_5",
-    type: "invoice_summary",
-    title: "Send Lisa an invoice summary",
-    subtitle: "New invoice needs a friendly breakdown",
-    customerName: "Lisa Park",
-    priority: "low",
-    accentColor: "#34C759",
-  },
-];
