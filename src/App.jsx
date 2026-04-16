@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import PhoneFrame from './components/PhoneFrame'
 import useDragScroll from './hooks/useDragScroll'
+import { initialConversations, initialActions } from './data/mockData'
+import { getFallbackDraft } from './data/aiDrafts'
 
 // ─── Pro Memory Content ────────────────────────────────────────────────────────
 const PRO_MEMORY_CONTENT = `# Rowan Flooring
@@ -352,7 +354,7 @@ function InboxView({ conversations, actions, actionsSectionDismissed, onSelectCo
       {actions.length > 0 && !actionsSectionDismissed && (
         <div className="actions-section">
           <div className="actions-section-header">
-            <h2 className="actions-section-title">Suggested Actions</h2>
+            <h2 className="actions-section-title">Pending Actions</h2>
             <div className="actions-section-header-right">
               <span className="actions-count">{actions.length}</span>
               <button className="actions-dismiss-btn" onClick={onDismissAllActions} title="Dismiss all">
@@ -558,13 +560,12 @@ function NewConversationModal({ onClose, onCreate }) {
 }
 
 export default function App() {
-  const [conversations, setConversations] = useState([])
-  const [actions, setActions] = useState([])
+  const [conversations, setConversations] = useState(initialConversations)
+  const [actions] = useState(initialActions)
   const [selectedConversation, setSelectedConversation] = useState(null)
   const [aiDraft, setAiDraft] = useState(null)
   const [showReasoning, setShowReasoning] = useState(false)
   const [isLoadingDraft, setIsLoadingDraft] = useState(false)
-  const [sentMessages, setSentMessages] = useState({})
   const [dismissedActionIds, setDismissedActionIds] = useState(new Set())
   const [actionsSectionDismissed, setActionsSectionDismissed] = useState(false)
   const [showProMemory, setShowProMemory] = useState(false)
@@ -574,116 +575,53 @@ export default function App() {
 
   const visibleActions = actions.filter(a => !dismissedActionIds.has(a.id))
 
-  // Fetch conversations and actions on mount
-  useEffect(() => {
-    fetch('/api/conversations')
-      .then(res => res.json())
-      .then(data => setConversations(data))
-      .catch(err => console.error('Failed to fetch conversations:', err))
+  // No refresh needed — conversations state is the source of truth
 
-    fetch('/api/actions')
-      .then(res => res.json())
-      .then(data => setActions(data))
-      .catch(err => console.error('Failed to fetch actions:', err))
-  }, [])
-
-  const refreshInbox = useCallback(async () => {
-    try {
-      const [convRes, actionsRes] = await Promise.all([
-        fetch('/api/conversations'),
-        fetch('/api/actions'),
-      ])
-      const [convData, actionsData] = await Promise.all([
-        convRes.json(),
-        actionsRes.json(),
-      ])
-      setConversations(convData)
-      setActions(actionsData)
-    } catch (err) {
-      console.error('Failed to refresh inbox:', err)
-    }
-  }, [])
-
-  const fetchAiDraft = useCallback(async (conversationId) => {
+  const fetchAiDraft = useCallback((conversationId) => {
     setIsLoadingDraft(true)
-    try {
-      const action = actions.find(a => a.conversationId === conversationId);
-      const res = await fetch('/api/ai/draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, actionType: action?.type || 'invoice_question' }),
-      })
-      const data = await res.json()
-      setAiDraft(data)
-    } catch (err) {
-      console.error('Failed to fetch AI draft:', err)
-    } finally {
-      setIsLoadingDraft(false)
-    }
-  }, [actions])
-
-  const handleSelectConversation = useCallback(async (id) => {
-    try {
-      const res = await fetch(`/api/conversations/${id}`)
-      const data = await res.json()
-      // Merge in any optimistically sent messages
-      if (sentMessages[id]) {
-        data.messages = [...(data.messages || []), ...sentMessages[id]]
+    // Brief delay to show the typing indicator for demo effect
+    setTimeout(() => {
+      const conv = conversations.find(c => c.id === conversationId)
+      const action = actions.find(a => a.conversationId === conversationId)
+      if (conv) {
+        const draft = getFallbackDraft(conv, action?.type || 'invoice_question')
+        setAiDraft(draft)
       }
-      setSelectedConversation(data)
+      setIsLoadingDraft(false)
+    }, 800)
+  }, [conversations, actions])
+
+  const handleSelectConversation = useCallback((id) => {
+    const conv = conversations.find(c => c.id === id)
+    if (conv) {
+      setSelectedConversation({ ...conv })
       setAiDraft(null)
-    } catch (err) {
-      console.error('Failed to fetch conversation:', err)
     }
-  }, [sentMessages])
+  }, [conversations])
 
   const handleBack = useCallback(() => {
-    const convId = selectedConversation?.id
     setSelectedConversation(null)
     setAiDraft(null)
     setSenderMode('pro')
     setShowCustomerMemory(false)
-    if (convId) {
-      setSentMessages(prev => {
-        const next = { ...prev }
-        delete next[convId]
-        return next
-      })
-    }
-    refreshInbox()
-  }, [selectedConversation, refreshInbox])
+  }, [])
 
-  const handleActionReply = useCallback(async (action) => {
-    const convId = action.conversationId
-    try {
-      const res = await fetch(`/api/conversations/${convId}`)
-      const data = await res.json()
-      if (sentMessages[convId]) {
-        data.messages = [...(data.messages || []), ...sentMessages[convId]]
-      }
-      data.hasAIAction = true
-      setSelectedConversation(data)
+  const handleActionReply = useCallback((action) => {
+    const conv = conversations.find(c => c.id === action.conversationId)
+    if (conv) {
+      setSelectedConversation({ ...conv, hasAIAction: true })
       setAiDraft(null)
-      fetchAiDraft(convId)
-    } catch (err) {
-      console.error('Failed to handle action reply:', err)
+      fetchAiDraft(action.conversationId)
     }
-  }, [sentMessages, fetchAiDraft])
+  }, [conversations, fetchAiDraft])
 
-  const handleActionView = useCallback(async (action) => {
-    const convId = action.conversationId
-    try {
-      const res = await fetch(`/api/conversations/${convId}`)
-      const data = await res.json()
-      if (sentMessages[convId]) {
-        data.messages = [...(data.messages || []), ...sentMessages[convId]]
-      }
-      setSelectedConversation(data)
+  const handleActionView = useCallback((action) => {
+    const conv = conversations.find(c => c.id === action.conversationId)
+    if (conv) {
+      setSelectedConversation({ ...conv })
       setAiDraft(null)
-    } catch (err) {
-      console.error('Failed to handle action view:', err)
     }
-  }, [sentMessages])
+  }, [conversations])
 
   const handleShowReasoning = useCallback(() => {
     setShowReasoning(true)
@@ -693,64 +631,50 @@ export default function App() {
     setShowReasoning(false)
   }, [])
 
-  const handleSendDraft = useCallback(async (text) => {
+  const handleSendDraft = useCallback((text) => {
     if (!selectedConversation) return
     const convId = selectedConversation.id
-
-    // Optimistic update
     const newMessage = {
+      id: `msg_${Date.now()}`,
       isFromCustomer: false,
       text,
       timestamp: new Date().toISOString(),
+      type: 'text',
     }
+    // Update selected conversation view
     setSelectedConversation(prev => ({
       ...prev,
       messages: [...(prev.messages || []), newMessage],
     }))
-    setSentMessages(prev => ({
-      ...prev,
-      [convId]: [...(prev[convId] || []), newMessage],
-    }))
+    // Update master conversations list so inbox reflects the change
+    setConversations(prev => prev.map(c =>
+      c.id === convId
+        ? { ...c, messages: [...c.messages, newMessage], lastMessage: { text, timestamp: newMessage.timestamp, isFromCustomer: false }, unreadCount: 0 }
+        : c
+    ))
     setAiDraft(null)
-
-    try {
-      await fetch(`/api/messages/${convId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, sender: 'pro' }),
-      })
-    } catch (err) {
-      console.error('Failed to send message:', err)
-    }
   }, [selectedConversation])
 
-  const handleSendMessage = useCallback(async (text) => {
+  const handleSendMessage = useCallback((text) => {
     if (!selectedConversation) return
     const convId = selectedConversation.id
-
+    const isFromCustomer = senderMode === 'customer'
     const newMessage = {
-      isFromCustomer: senderMode === 'customer',
+      id: `msg_${Date.now()}`,
+      isFromCustomer,
       text,
       timestamp: new Date().toISOString(),
+      type: 'text',
     }
     setSelectedConversation(prev => ({
       ...prev,
       messages: [...(prev.messages || []), newMessage],
     }))
-    setSentMessages(prev => ({
-      ...prev,
-      [convId]: [...(prev[convId] || []), newMessage],
-    }))
-
-    try {
-      await fetch(`/api/messages/${convId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, sender: senderMode }),
-      })
-    } catch (err) {
-      console.error('Failed to send message:', err)
-    }
+    setConversations(prev => prev.map(c =>
+      c.id === convId
+        ? { ...c, messages: [...c.messages, newMessage], lastMessage: { text, timestamp: newMessage.timestamp, isFromCustomer }, unreadCount: isFromCustomer ? c.unreadCount + 1 : 0 }
+        : c
+    ))
   }, [selectedConversation, senderMode])
 
   const handleEditDraft = useCallback((newText) => {
@@ -789,21 +713,23 @@ export default function App() {
     setShowCustomerMemory(false)
   }, [])
 
-  const handleCreateConversation = useCallback(async (name) => {
-    try {
-      const res = await fetch('/api/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
-      })
-      const newConv = await res.json()
-      setConversations(prev => [newConv, ...prev])
-      setShowNewConversation(false)
-      setSelectedConversation(newConv)
-      setSenderMode('pro')
-    } catch (err) {
-      console.error('Failed to create conversation:', err)
+  const handleCreateConversation = useCallback((name) => {
+    const id = `conv_${Date.now()}`
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+    const newConv = {
+      id,
+      customer: { name, initials, phone: '' },
+      invoice: null,
+      messages: [],
+      lastMessage: null,
+      unreadCount: 0,
+      hasAIAction: false,
+      actionType: null,
     }
+    setConversations(prev => [newConv, ...prev])
+    setShowNewConversation(false)
+    setSelectedConversation(newConv)
+    setSenderMode('pro')
   }, [])
 
   return (
