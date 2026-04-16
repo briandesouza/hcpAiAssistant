@@ -236,6 +236,8 @@ body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .action-cards-carousel::-webkit-scrollbar {

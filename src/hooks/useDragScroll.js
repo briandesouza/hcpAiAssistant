@@ -1,7 +1,7 @@
-import { useRef, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function useDragScroll(direction = 'vertical') {
-  const elRef = useRef(null)
+  const [node, setNode] = useState(null)
   const state = useRef({
     isDragging: false,
     didDrag: false,
@@ -12,21 +12,24 @@ export default function useDragScroll(direction = 'vertical') {
   })
 
   const THRESHOLD = 5
+  const setRef = useCallback((el) => {
+    setNode(el)
+  }, [])
 
   useEffect(() => {
-    const el = elRef.current
-    if (!el) return
+    if (!node) return
 
     function onMouseDown(e) {
       if (e.button !== 0) return
+      if (direction === 'horizontal') e.preventDefault()
 
       const s = state.current
       s.isDragging = false
       s.didDrag = false
       s.startX = e.clientX
       s.startY = e.clientY
-      s.scrollStartX = el.scrollLeft
-      s.scrollStartY = el.scrollTop
+      s.scrollStartX = node.scrollLeft
+      s.scrollStartY = node.scrollTop
 
       document.body.style.userSelect = 'none'
 
@@ -43,13 +46,13 @@ export default function useDragScroll(direction = 'vertical') {
         const dist = direction === 'vertical' ? Math.abs(dy) : Math.abs(dx)
         if (dist < THRESHOLD) return
         s.isDragging = true
-        el.style.cursor = 'grabbing'
+        node.style.cursor = 'grabbing'
       }
 
       if (direction === 'vertical') {
-        el.scrollTop = s.scrollStartY - dy
+        node.scrollTop = s.scrollStartY - dy
       } else {
-        el.scrollLeft = s.scrollStartX - dx
+        node.scrollLeft = s.scrollStartX - dx
       }
     }
 
@@ -59,7 +62,7 @@ export default function useDragScroll(direction = 'vertical') {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
 
-      el.style.cursor = ''
+      node.style.cursor = ''
       document.body.style.userSelect = ''
 
       if (s.isDragging) {
@@ -81,28 +84,29 @@ export default function useDragScroll(direction = 'vertical') {
     function onWheel(e) {
       if (e.deltaY !== 0) {
         e.preventDefault()
-        el.scrollLeft += e.deltaY
+        node.scrollLeft += e.deltaY
       }
     }
 
-    el.addEventListener('mousedown', onMouseDown)
-    el.addEventListener('click', onClickCapture, true)
+    node.addEventListener('mousedown', onMouseDown)
+    node.addEventListener('click', onClickCapture, true)
 
     if (direction === 'horizontal') {
-      el.addEventListener('wheel', onWheel, { passive: false })
+      node.addEventListener('wheel', onWheel, { passive: false })
     }
 
     return () => {
-      el.removeEventListener('mousedown', onMouseDown)
-      el.removeEventListener('click', onClickCapture, true)
+      node.removeEventListener('mousedown', onMouseDown)
+      node.removeEventListener('click', onClickCapture, true)
       if (direction === 'horizontal') {
-        el.removeEventListener('wheel', onWheel)
+        node.removeEventListener('wheel', onWheel)
       }
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
+      node.style.cursor = ''
       document.body.style.userSelect = ''
     }
-  }, [direction])
+  }, [direction, node])
 
-  return elRef
+  return setRef
 }
