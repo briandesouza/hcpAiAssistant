@@ -8,7 +8,7 @@ Built as an MVP to demonstrate how AI can help small businesses (like flooring c
 
 - **Frontend**: React 18 + Vite — single-page app with iOS-inspired design
 - **Backend**: Express — REST API with in-memory mock data
-- **AI**: OpenAI GPT via structured output (Zod schemas) with per-action-type system prompts, plus Anthropic Claude integration
+- **AI**: Anthropic Claude (Opus 4.6) via tool use for structured output, with per-action-type system prompts
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ Built as an MVP to demonstrate how AI can help small businesses (like flooring c
 # Install dependencies
 npm install
 
-# Add your OpenAI API key
+# Add your Anthropic API key
 cp .env.example .env  # then edit .env with your key
 
 # Start dev server (frontend + backend)
@@ -57,7 +57,7 @@ src/                  # React frontend
 server/
   index.js            # Express API endpoints
   mockData.js         # 6 hardcoded conversations with relative timestamps
-  openai.js           # OpenAI integration with structured output
+  claude.js           # Anthropic Claude integration with tool use
 docs/
   PRD.md              # Product requirements document
 ```
@@ -66,5 +66,5 @@ docs/
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | OpenAI API key for AI draft generation |
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key for AI draft generation |
 | `PORT` | No | API server port (default: 3001) |
