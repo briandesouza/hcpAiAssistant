@@ -12,6 +12,7 @@ export default function useDragScroll(direction = 'vertical') {
   })
 
   const THRESHOLD = 5
+  const HORIZONTAL_DRAG_MULTIPLIER = 1.35
   const setRef = useCallback((el) => {
     setNode(el)
   }, [])
@@ -52,7 +53,7 @@ export default function useDragScroll(direction = 'vertical') {
       if (direction === 'vertical') {
         node.scrollTop = s.scrollStartY - dy
       } else {
-        node.scrollLeft = s.scrollStartX - dx
+        node.scrollLeft = s.scrollStartX - (dx * HORIZONTAL_DRAG_MULTIPLIER)
       }
     }
 
@@ -106,7 +107,7 @@ export default function useDragScroll(direction = 'vertical') {
       node.style.cursor = ''
       document.body.style.userSelect = ''
     }
-  }, [direction, node])
+  }, [direction, node, HORIZONTAL_DRAG_MULTIPLIER])
 
   return setRef
 }
