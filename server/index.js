@@ -6,6 +6,7 @@ import {
   getConversation,
   getActions,
   addMessage,
+  addConversation,
 } from "./mockData.js";
 import { generateDraft } from "./openai.js";
 
@@ -80,18 +81,35 @@ app.post("/api/ai/draft", async (req, res) => {
   }
 });
 
+// ─── POST /api/conversations ────────────────────────────────────────────────
+// Creates a new conversation with a customer name.
+// Body: { name: string }
+app.post("/api/conversations", (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Customer name is required" });
+    }
+    const conversation = addConversation(name.trim());
+    res.json(conversation);
+  } catch (error) {
+    console.error("Error creating conversation:", error);
+    res.status(500).json({ error: "Failed to create conversation" });
+  }
+});
+
 // ─── POST /api/messages/:conversationId ─────────────────────────────────────
 // Sends a message from the Pro to a conversation.
 // Body: { text: string }
 app.post("/api/messages/:conversationId", (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, sender } = req.body;
 
     if (!text || !text.trim()) {
       return res.status(400).json({ error: "Message text is required" });
     }
 
-    const message = addMessage(req.params.conversationId, text.trim());
+    const message = addMessage(req.params.conversationId, text.trim(), sender || "pro");
     if (!message) {
       return res.status(404).json({ error: "Conversation not found" });
     }

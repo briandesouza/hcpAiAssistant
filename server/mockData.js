@@ -597,7 +597,7 @@ const actions = [
     subtitle: "Offer a payment plan option",
     customerName: "David Kim",
     priority: "high",
-    accentColor: "#AF52DE",
+    accentColor: "#0061FF",
   },
   {
     id: "action_5",
@@ -621,15 +621,17 @@ export function getConversation(id) {
   return conversations.find((c) => c.id === id) || null;
 }
 
-export function addMessage(conversationId, text) {
+export function addMessage(conversationId, text, sender = "pro") {
   const conv = conversations.find((c) => c.id === conversationId);
   if (!conv) return null;
+
+  const isFromCustomer = sender === "customer";
 
   const newMsg = {
     id: `msg_${conversationId.split("_")[1]}_${conv.messages.length + 1}`,
     text,
     timestamp: new Date().toISOString(),
-    isFromCustomer: false,
+    isFromCustomer,
     type: "text",
   };
 
@@ -637,13 +639,37 @@ export function addMessage(conversationId, text) {
   conv.lastMessage = {
     text,
     timestamp: newMsg.timestamp,
-    isFromCustomer: false,
+    isFromCustomer,
   };
 
-  // Mark as read since the Pro just responded
-  conv.unreadCount = 0;
+  // Mark as read only if the Pro responded
+  if (!isFromCustomer) {
+    conv.unreadCount = 0;
+  }
 
   return newMsg;
+}
+
+export function addConversation(name) {
+  const id = `conv_${Date.now()}`;
+  const initials = name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+  const newConv = {
+    id,
+    customer: { name, initials, phone: "" },
+    invoice: null,
+    messages: [],
+    lastMessage: null,
+    unreadCount: 0,
+    hasAIAction: false,
+    actionType: null,
+  };
+  conversations.push(newConv);
+  return newConv;
 }
 
 export function getActions() {
